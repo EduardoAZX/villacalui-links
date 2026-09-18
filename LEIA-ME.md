@@ -29,6 +29,24 @@ O logo usado é o `assets/logo-villa-calui.png` (marca branca). O arquivo é um 
 150×150**, sem transparência: por isso o selo redondo o recorta em disco (`overflow:hidden`),
 deixando visível apenas o anel. Se chegar o arquivo vetorial da marca, substitua mantendo o nome.
 
+## O fundo
+
+A mesma foto do hero da landing page: `assets/fundohero-fundo.jpg`, o salão à noite. Ela já vem
+reduzida e com o desfoque **assado no arquivo** — nada de `filter:blur()`, que numa área do
+tamanho da tela custa pintura a cada quadro. Para trocar a foto ou o grau de desfoque, o
+comando do ImageMagick está no LEIA-ME da landing page, e o arquivo é o mesmo nos dois projetos:
+se mudar lá, copie para cá.
+
+Entra como `body::before`, com três detalhes que não são decoração:
+
+- **`position:fixed`** — a página não rola, então a foto fica presa à janela;
+- **`pointer-events:none`** — sem isso a camada roubaria o clique dos links que ficam por cima;
+- **`opacity:.18`** — é o botão de volume da foto, e é o mesmo valor da landing page. Mais
+  baixa, a foto se dissolve no preto do `body`; mais alta, ela aparece.
+
+O `.tela` ganhou `position:relative;z-index:1` para ficar acima dela. Os modais já estavam em
+`z-index:100` e continuam por cima de tudo.
+
 ## Página única, sem rolagem
 
 A tela toda cabe em `100dvh` e nada rola. Isso é sustentado por duas decisões:

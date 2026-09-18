@@ -52,9 +52,29 @@ p{margin:0}
 .ponto{opacity:.4;margin:0 .45em}
 
 /* ============================================================
+   FUNDO — a mesma foto da landing page
+   --------------------------------------------------------
+   `assets/fundohero-fundo.jpg` já vem reduzida e com o desfoque
+   assado no arquivo: nada de `filter:blur()`, que numa área do
+   tamanho da tela custa pintura a cada quadro.
+
+   A foto é `fixed` porque a página não rola — e `pointer-events:none`
+   para não roubar o clique dos links que ficam por cima.
+   A opacidade é o botão de volume: mais baixa, a foto se dissolve no
+   preto do body; mais alta, ela aparece. É o mesmo .18 da landing.
+   ============================================================ */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;
+  background:url("assets/fundohero-fundo.jpg") center/cover no-repeat;
+  opacity:.18;
+  pointer-events:none;
+}
+
+/* ============================================================
    PALCO — uma tela, conteúdo centrado
    ============================================================ */
 .tela{
+  position:relative;z-index:1;
   min-height:100dvh;height:100dvh;
   display:grid;place-items:center;
   padding:clamp(14px,2.4vh,28px) clamp(18px,5vw,32px);
