@@ -1,0 +1,286 @@
+/* ============================================================
+   VILLA CALUÍ — Página de links
+   Preto e branco · GFS Didot (títulos) + Inter (corpo)
+   Editorial, cantos suaves — mesmo sistema visual da landing page
+   Ícones: Phosphor Icons, peso regular (MIT) — embutidos em index.html
+
+   PÁGINA ÚNICA, SEM ROLAGEM
+   O ritmo vertical é medido em vh, não em px fixos: o bloco
+   encolhe junto com a janela em vez de transbordar para baixo.
+   ============================================================ */
+
+:root{
+  --tinta:#0A0A0A;
+  --papel:#FFFFFF;
+  --cinza:#585858;
+  --cinza-claro:#8E8E8E;
+  --linha:rgba(10,10,10,.13);
+  --linha-clara:rgba(255,255,255,.48);   /* contorno das pílulas e do selo */
+  --linha-fina:rgba(255,255,255,.22);    /* filetes decorativos do kicker */
+
+  --didot:"GFS Didot","Didot","Bodoni MT","Playfair Display",Georgia,"Times New Roman",serif;
+  --sans:"Inter",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+
+  --r-g:22px;
+  --r-p:11px;
+
+  --colw:480px;   /* largura da coluna de links */
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--tinta);
+  color:var(--papel);
+  font-family:var(--sans);
+  font-weight:300;
+  font-size:16px;
+  line-height:1.6;
+  letter-spacing:-.003em;
+  overflow:hidden;              /* página única: nada rola */
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+svg{display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--didot);font-weight:400;margin:0;line-height:1.05;letter-spacing:-.015em}
+p{margin:0}
+.italico{font-style:italic}
+.ponto{opacity:.4;margin:0 .45em}
+
+/* ============================================================
+   PALCO — uma tela, conteúdo centrado
+   ============================================================ */
+.tela{
+  min-height:100dvh;height:100dvh;
+  display:grid;place-items:center;
+  padding:clamp(14px,2.4vh,28px) clamp(18px,5vw,32px);
+  padding-top:max(clamp(14px,2.4vh,28px),env(safe-area-inset-top));
+  padding-bottom:max(clamp(14px,2.4vh,28px),env(safe-area-inset-bottom));
+}
+.palco{
+  width:100%;max-width:var(--colw);
+  max-height:100%;
+  display:flex;flex-direction:column;
+  align-items:stretch;
+  gap:clamp(14px,2.8vh,30px);
+  /* válvula de segurança: em janelas absurdamente baixas o conteúdo
+     desliza em vez de ser cortado — a barra some da vista */
+  overflow-y:auto;scrollbar-width:none;overscroll-behavior:contain;
+}
+.palco::-webkit-scrollbar{display:none}
+
+/* ============================================================
+   ANIMAÇÃO DE ENTRADA
+   Feita só em CSS: a classe .anim entra no <html> antes do
+   primeiro paint (script no <head>). Como a página não rola, os
+   blocos aparecem em cascata, de cima para baixo.
+
+   Nenhum arquivo externo participa: se o main.js não carregar,
+   o conteúdo aparece do mesmo jeito. Sem JS nenhum, a classe
+   .anim nunca é escrita e tudo nasce visível.
+   ============================================================ */
+@keyframes entra{
+  from{opacity:0;transform:translate3d(0,14px,0)}
+  to{opacity:1;transform:none}
+}
+/* curta de propósito: é uma página de links, o visitante toca
+   em poucos segundos — tudo termina de entrar em ~0,8s */
+.anim [data-anim]{
+  opacity:0;
+  animation:entra .5s cubic-bezier(.22,1,.36,1) both;
+}
+.anim .marca__selo            {animation-delay:0s}
+.anim .marca > div[data-anim] {animation-delay:.07s}
+.anim .link:nth-child(1)      {animation-delay:.14s}
+.anim .link:nth-child(2)      {animation-delay:.19s}
+.anim .link:nth-child(3)      {animation-delay:.24s}
+.anim .link:nth-child(4)      {animation-delay:.29s}
+.anim .rodape                 {animation-delay:.34s}
+
+@media (prefers-reduced-motion:reduce){
+  [data-anim]{opacity:1 !important;transform:none !important;animation:none !important}
+}
+
+/* ============================================================
+   IDENTIDADE
+   ============================================================ */
+.marca{text-align:center;display:flex;flex-direction:column;align-items:center;gap:clamp(12px,2.2vh,22px)}
+/* o PNG do logo é um quadrado opaco: o selo o recorta em disco,
+   deixando só o anel visível sobre o fundo preto */
+.marca__selo{
+  width:clamp(76px,13.5vh,120px);aspect-ratio:1;
+  border-radius:50%;overflow:hidden;
+  display:grid;place-items:center;
+  border:2px solid var(--linha-clara);
+}
+.marca__selo img{width:100%;height:100%;object-fit:cover}
+.marca h1{font-size:clamp(30px,5.4vh,54px);margin-bottom:clamp(8px,1.4vh,14px)}
+
+.kicker{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  margin:0 0 clamp(8px,1.4vh,14px);
+  font-family:var(--sans);font-weight:400;font-size:clamp(8.5px,1.15vh,10px);
+  letter-spacing:.3em;text-transform:uppercase;color:var(--papel);
+}
+.kicker::before,.kicker::after{content:"";height:1px;flex:1;max-width:60px;background:var(--linha-fina)}
+/* o rótulo é um só item do flex, para que os filetes fiquem nas pontas
+   e o texto não se espalhe pela linha quando falta largura */
+.kicker__txt{flex:0 1 auto;text-align:center}
+/* sem largura para a linha inteira, as duas partes empilham e o ponto sai */
+@media (max-width:470px){
+  .kicker::before,.kicker::after{display:none}
+  .kicker__txt{display:grid;justify-items:center;row-gap:3px}
+  .kicker__txt .ponto{display:none}
+}
+
+.bio{
+  font-size:clamp(13px,1.85vh,16px);line-height:1.6;
+  color:rgba(255,255,255,.66);max-width:34ch;margin-inline:auto;font-weight:300;
+}
+
+/* ============================================================
+   LINKS — pílulas com ícone, no ritmo dos botões da landing
+   ============================================================ */
+.links{display:flex;flex-direction:column;gap:clamp(8px,1.5vh,14px)}
+.link{
+  display:flex;align-items:center;gap:clamp(12px,2vw,18px);
+  padding:clamp(9px,1.7vh,15px) clamp(14px,2.4vw,20px);
+  border:2px solid var(--linha-clara);border-radius:999px;
+  background:transparent;color:var(--papel);
+  transition:background .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),
+             border-color .45s ease,transform .45s cubic-bezier(.22,1,.36,1);
+}
+.link:hover{background:var(--papel);color:var(--tinta);border-color:var(--papel);transform:translateY(-2px)}
+.link:focus-visible{outline:2px solid var(--papel);outline-offset:3px}
+.link:active{transform:translateY(0)}
+
+.link__ico{
+  flex:0 0 auto;
+  width:clamp(34px,5.4vh,44px);aspect-ratio:1;
+  border-radius:50%;border:2px solid currentColor;
+  display:grid;place-items:center;
+  opacity:.9;transition:opacity .45s ease;
+}
+.link:hover .link__ico{opacity:1}
+/* Phosphor Icons, peso regular: desenho em preenchimento, não em traço */
+.link__ico svg{width:56%;height:auto;fill:currentColor}
+
+.link__txt{flex:1 1 auto;min-width:0;display:block;text-align:center}
+.link__tit{
+  display:block;font-family:var(--didot);
+  font-size:clamp(16px,2.35vh,21px);line-height:1.15;letter-spacing:-.01em;
+}
+.link__sub{
+  display:block;margin-top:clamp(2px,.5vh,5px);
+  font-size:clamp(8.5px,1.15vh,9.5px);letter-spacing:.2em;text-transform:uppercase;
+  color:inherit;opacity:.68;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+.link__seta{
+  flex:0 0 auto;width:clamp(34px,5.4vh,44px);
+  display:grid;place-items:center;opacity:.6;
+  transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .45s ease;
+}
+.link__seta svg{width:19px;height:19px;fill:currentColor}
+.link:hover .link__seta{transform:translateX(4px);opacity:1}
+
+/* ============================================================
+   RODAPÉ
+   ============================================================ */
+.rodape{text-align:center;display:flex;flex-direction:column;gap:clamp(5px,1vh,9px)}
+.rodape__legal,.rodape__base{
+  font-size:clamp(9px,1.25vh,10.5px);letter-spacing:.14em;text-transform:uppercase;
+  line-height:1.7;
+}
+.rodape__legal{color:rgba(255,255,255,.72)}
+.rodape__base{color:rgba(255,255,255,.4)}
+.rodape .legal{
+  border:0;background:none;padding:0;cursor:pointer;
+  font-size:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;
+}
+.rodape .legal:hover,.rodape__base a:hover{text-decoration:underline;text-underline-offset:3px}
+.rodape .legal:focus-visible,.rodape__base a:focus-visible{outline:2px solid rgba(255,255,255,.7);outline-offset:3px;border-radius:4px}
+.rodape__base a{color:rgba(255,255,255,.7)}
+.rodape__base a:hover{color:var(--papel)}
+
+/* ---------------- telas baixas e deitadas ---------------- */
+@media (max-height:430px) and (min-width:700px){
+  .palco{
+    max-width:920px;
+    display:grid;grid-template-columns:1fr 1.15fr;
+    align-items:center;column-gap:clamp(24px,4vw,48px);
+    grid-template-areas:"marca links" "marca rodape";
+    grid-template-rows:1fr auto;
+  }
+  .marca{grid-area:marca}
+  .links{grid-area:links}
+  .rodape{grid-area:rodape;text-align:right;margin-top:clamp(8px,2vh,14px)}
+}
+
+/* ============================================================
+   MODAIS — abrem sobre a própria página, sem recarregar nem navegar
+   ============================================================ */
+body.travado{overflow:hidden}
+.modal{
+  position:fixed;inset:0;z-index:100;display:none;
+  align-items:center;justify-content:center;padding:clamp(12px,3vw,32px);
+}
+.modal.aberto{display:flex}
+.modal__fundo{position:absolute;inset:0;background:rgba(10,10,10,.72);animation:fundoEntra .3s ease both}
+.modal__caixa{
+  position:relative;display:flex;flex-direction:column;
+  width:min(720px,100%);max-height:min(88vh,100%);
+  background:var(--papel);color:var(--tinta);
+  border-radius:var(--r-g);overflow:hidden;
+  box-shadow:0 40px 90px -40px rgba(0,0,0,.6);
+  animation:caixaEntra .38s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes fundoEntra{from{opacity:0}to{opacity:1}}
+@keyframes caixaEntra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .modal__fundo,.modal__caixa{animation:none}
+}
+.modal__topo{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:18px;
+  padding:clamp(18px,2.6vw,26px) clamp(18px,2.6vw,30px);
+  border-bottom:1px solid var(--linha);flex:0 0 auto;
+}
+.modal__topo h2{font-size:clamp(22px,2.4vw,30px);line-height:1.1}
+.modal__topo .atualizado{margin:6px 0 0;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--cinza-claro)}
+.modal__fechar{
+  flex:0 0 auto;width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--linha);background:transparent;cursor:pointer;
+  display:grid;place-items:center;font-size:17px;line-height:1;
+  transition:background .3s ease,color .3s ease,border-color .3s ease;
+}
+.modal__fechar:hover{background:var(--tinta);color:var(--papel);border-color:var(--tinta)}
+.modal__fechar:focus-visible{outline:2px solid var(--tinta);outline-offset:3px}
+.modal__corpo{
+  overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  padding:clamp(18px,2.6vw,26px) clamp(18px,2.6vw,30px) clamp(24px,3vw,34px);
+}
+.modal__corpo h3{
+  font-family:var(--sans);font-weight:500;font-size:12.5px;letter-spacing:.06em;
+  text-transform:uppercase;margin:26px 0 8px;color:var(--tinta);
+}
+.modal__corpo h3:first-child{margin-top:0}
+.modal__corpo p,.modal__corpo li{font-size:14px;line-height:1.65;color:var(--cinza)}
+.modal__corpo p{margin:0 0 10px}
+.modal__corpo ul{margin:0 0 12px;padding-left:18px}
+.modal__corpo li{margin-bottom:6px}
+.modal__corpo strong{color:var(--tinta);font-weight:500}
+.modal__corpo em{font-style:italic}
+.modal__corpo .marcador{
+  display:inline-block;background:rgba(10,10,10,.06);border-radius:5px;
+  padding:1px 6px;color:var(--tinta);font-size:13px;
+}
+.modal__corpo a{color:var(--tinta);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:560px){
+  .modal{padding:0;align-items:flex-end}
+  .modal__caixa{max-height:92dvh;border-radius:var(--r-g) var(--r-g) 0 0;width:100%}
+}
